@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlockCraft SMP - Complete Store Economy Simulator</title>
+    <title>BlockCraft SMP - Elite Economy Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --mc-bg: #121214;
-            --mc-panel: #1a1a1e;
-            --mc-slot: #8b8b8b;
-            --mc-border-light: #ffffff;
-            --mc-border-dark: #373737;
-            --mc-gold: #f39c12;
+            --mc-bg: #0b0b0e;
+            --mc-panel: #141418;
+            --mc-panel-border: #2a2a35;
+            --mc-slot: #22222b;
+            --mc-gold: #f1c40f;
             --mc-green: #2ecc71;
             --mc-red: #e74c3c;
-            --mc-text: #e0e0e0;
-            --mc-subtext: #a0a0a5;
+            --mc-blue: #3498db;
+            --mc-text: #f0f0f5;
+            --mc-subtext: #8b8b9e;
         }
 
         * {
@@ -28,23 +28,24 @@
 
         body {
             background-color: var(--mc-bg);
-            background-image: radial-gradient(circle at 50% 50%, #1f1f25 0%, #121214 100%);
+            background-image: radial-gradient(circle at 50% 20%, #1a1a24 0%, #0b0b0e 100%);
             color: var(--mc-text);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px;
         }
 
         header {
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 0 auto 24px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--mc-panel);
-            border: 4px solid #2d2d35;
+            border: 2px solid var(--mc-panel-border);
+            border-radius: 12px;
             padding: 20px 30px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.6);
         }
 
         .server-brand {
@@ -54,38 +55,39 @@
         }
 
         .server-logo {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             image-rendering: pixelated;
         }
 
         .server-title h1 {
             font-family: 'VT323', monospace;
-            font-size: 36px;
+            font-size: 34px;
             color: #fff;
             letter-spacing: 1px;
-            text-shadow: 2px 2px #000;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .server-title p {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--mc-subtext);
         }
 
         .global-stats {
             display: flex;
-            gap: 20px;
+            gap: 16px;
         }
 
         .stat-card {
-            background: #111114;
-            border: 2px solid #33333d;
+            background: #0f0f13;
+            border: 1px solid var(--mc-panel-border);
+            border-radius: 8px;
             padding: 10px 18px;
             text-align: right;
         }
 
         .stat-card .label {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--mc-subtext);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -93,15 +95,15 @@
 
         .stat-card .value {
             font-family: 'VT323', monospace;
-            font-size: 26px;
+            font-size: 24px;
             color: var(--mc-gold);
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 320px 1fr;
             gap: 24px;
         }
 
@@ -119,18 +121,20 @@
 
         .panel {
             background: var(--mc-panel);
-            border: 4px solid #2d2d35;
+            border: 2px solid var(--mc-panel-border);
+            border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
 
         .panel h2 {
             font-family: 'VT323', monospace;
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 14px;
             color: #fff;
-            border-bottom: 2px solid #33333d;
+            border-bottom: 1px solid var(--mc-panel-border);
             padding-bottom: 6px;
+            letter-spacing: 0.5px;
         }
 
         .control-group {
@@ -139,9 +143,10 @@
 
         .control-group label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--mc-subtext);
             margin-bottom: 6px;
+            text-transform: uppercase;
         }
 
         .control-group input[type="range"] {
@@ -151,82 +156,122 @@
 
         .btn {
             font-family: 'VT323', monospace;
-            font-size: 20px;
-            background: #4a4a55;
+            font-size: 18px;
+            background: #252530;
             color: #fff;
-            border: 3px solid;
-            border-color: #707080 #2b2b33 #2b2b33 #707080;
+            border: 1px solid #3a3a4d;
+            border-radius: 6px;
             padding: 8px 16px;
             cursor: pointer;
             width: 100%;
             text-align: center;
-            transition: background 0.1s;
+            transition: all 0.2s ease;
         }
 
-        .btn:hover { background: #5a5a6a; }
-        .btn:active { border-color: #2b2b33 #707080 #707080 #2b2b33; }
+        .btn:hover { background: #323242; border-color: #55556d; }
 
         .btn-green {
-            background: #27ae60;
-            border-color: #2ecc71 #1e8449 #1e8449 #2ecc71;
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--mc-green);
+            border-color: rgba(46, 204, 113, 0.4);
         }
-        .btn-green:hover { background: #2ecc71; }
+        .btn-green:hover { background: rgba(46, 204, 113, 0.25); }
 
         .btn-red {
-            background: #c0392b;
-            border-color: #e74c3c #962d22 #962d22 #e74c3c;
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--mc-red);
+            border-color: rgba(231, 76, 60, 0.4);
         }
-        .btn-red:hover { background: #e74c3c; }
+        .btn-red:hover { background: rgba(231, 76, 60, 0.25); }
 
         .workspace {
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
         .tabs {
             display: flex;
             gap: 8px;
-            flex-wrap: wrap;
         }
 
         .tab-btn {
             font-family: 'VT323', monospace;
-            font-size: 20px;
-            background: #18181c;
+            font-size: 18px;
+            background: var(--mc-panel);
             color: var(--mc-subtext);
-            border: 3px solid #2d2d35;
-            padding: 8px 18px;
+            border: 2px solid var(--mc-panel-border);
+            border-radius: 8px;
+            padding: 6px 16px;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .tab-btn.active {
-            background: var(--mc-panel);
-            border-bottom: 4px solid var(--mc-panel);
+            background: #1f1f2b;
             color: var(--mc-gold);
+            border-color: #44445c;
+        }
+
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+            max-width: 320px;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: var(--mc-panel);
+            border: 2px solid var(--mc-panel-border);
+            border-radius: 8px;
+            padding: 8px 14px 8px 36px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus { border-color: var(--mc-gold); }
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
         }
 
         .category-bar {
             display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
+            gap: 6px;
             flex-wrap: wrap;
         }
 
         .cat-btn {
             font-family: 'VT323', monospace;
-            font-size: 18px;
-            background: #222228;
+            font-size: 16px;
+            background: #111116;
             color: var(--mc-subtext);
-            border: 2px solid #33333d;
-            padding: 6px 14px;
+            border: 1px solid var(--mc-panel-border);
+            border-radius: 6px;
+            padding: 4px 12px;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .cat-btn.active {
             background: var(--mc-gold);
             color: #000;
-            border-color: #f39c12;
+            border-color: var(--mc-gold);
             font-weight: bold;
         }
 
@@ -235,19 +280,26 @@
 
         .shop-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 16px;
         }
 
         .item-card {
             background: var(--mc-panel);
-            border: 3px solid #33333d;
+            border: 2px solid var(--mc-panel-border);
+            border-radius: 10px;
             padding: 16px;
             position: relative;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .item-card:hover {
+            transform: translateY(-2px);
+            border-color: #404055;
         }
 
         .item-header {
@@ -260,8 +312,8 @@
             width: 44px;
             height: 44px;
             background: var(--mc-slot);
-            border: 2px solid;
-            border-color: var(--mc-border-dark) var(--mc-border-light) var(--mc-border-light) var(--mc-border-dark);
+            border: 2px solid #333342;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -269,13 +321,13 @@
         }
 
         .mc-slot img {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             image-rendering: pixelated;
         }
 
         .item-title h3 {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: #fff;
         }
@@ -288,15 +340,17 @@
         .item-metrics {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            background: #131316;
-            padding: 8px;
-            border: 2px solid #222228;
-            font-size: 13px;
+            background: #0f0f13;
+            border: 1px solid #1e1e26;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 12px;
         }
 
         .metric-label {
             color: var(--mc-subtext);
-            font-size: 11px;
+            font-size: 10px;
+            text-transform: uppercase;
         }
 
         .metric-val {
@@ -307,6 +361,33 @@
         .price-up { color: var(--mc-red); }
         .price-down { color: var(--mc-green); }
 
+        .multiplier-bar {
+            display: flex;
+            gap: 4px;
+            background: #0f0f13;
+            padding: 3px;
+            border-radius: 6px;
+            border: 1px solid #1e1e26;
+        }
+
+        .mult-btn {
+            flex: 1;
+            font-family: 'VT323', monospace;
+            font-size: 15px;
+            background: transparent;
+            border: none;
+            color: var(--mc-subtext);
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 2px 0;
+            transition: all 0.1s;
+        }
+
+        .mult-btn.active {
+            background: #282835;
+            color: var(--mc-gold);
+        }
+
         .item-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -315,41 +396,46 @@
 
         .item-actions button {
             font-family: 'VT323', monospace;
-            font-size: 18px;
+            font-size: 17px;
             padding: 6px;
-            border: 2px solid;
+            border-radius: 6px;
+            border: 1px solid;
             cursor: pointer;
             color: #fff;
+            transition: opacity 0.1s;
         }
+
+        .item-actions button:hover { opacity: 0.9; }
 
         .btn-buy {
-            background: #27ae60;
-            border-color: #2ecc71 #1e8449 #1e8449 #2ecc71;
+            background: rgba(46, 204, 113, 0.2);
+            border-color: rgba(46, 204, 113, 0.4);
+            color: var(--mc-green);
         }
-        .btn-buy:hover { background: #2ecc71; }
-
         .btn-sell {
-            background: #c0392b;
-            border-color: #e74c3c #962d22 #962d22 #e74c3c;
+            background: rgba(231, 76, 60, 0.2);
+            border-color: rgba(231, 76, 60, 0.4);
+            color: var(--mc-red);
         }
-        .btn-sell:hover { background: #e74c3c; }
 
         .chart-box {
             background: var(--mc-panel);
-            border: 4px solid #2d2d35;
+            border: 2px solid var(--mc-panel-border);
+            border-radius: 12px;
             padding: 20px;
             height: 420px;
             position: relative;
         }
 
         .log-box {
-            background: #0d0d0f;
-            border: 3px solid #222228;
-            height: 240px;
+            background: #0b0b0e;
+            border: 2px solid var(--mc-panel-border);
+            border-radius: 8px;
+            height: 260px;
             overflow-y: auto;
             padding: 12px;
             font-family: monospace;
-            font-size: 13px;
+            font-size: 12px;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -358,11 +444,11 @@
         .log-entry {
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px solid #1a1a20;
+            border-bottom: 1px solid #16161d;
             padding-bottom: 4px;
         }
 
-        .log-time { color: #666; }
+        .log-time { color: #555566; }
         .log-msg { color: #ccc; }
     </style>
 </head>
@@ -372,8 +458,8 @@
         <div class="server-brand">
             <img src="https://minecraft.wiki/images/Invicon_Iron_Ingot.png" alt="Server Logo" class="server-logo">
             <div class="server-title">
-                <h1>BLOCKCRAFT SMP ECONOMY SIMULATOR</h1>
-                <p>All-Item Synchronized Store Engine (Resources, Farming, Mob Drops, Deco, Building, Misc)</p>
+                <h1>BLOCKCRAFT SMP STORE SIMULATOR</h1>
+                <p>Live Supply & Demand Engine (Synced with Config Files)</p>
             </div>
         </div>
         <div class="global-stats">
@@ -393,20 +479,21 @@
     </header>
 
     <div class="container">
+        <!-- Sidebar Controls -->
         <div class="sidebar">
             <div class="panel">
-                <h2>Player Balance</h2>
-                <div style="font-family: 'VT323'; font-size: 32px; color: var(--mc-gold); margin-bottom: 12px;" id="player-balance">
+                <h2>Player Wallet</h2>
+                <div style="font-family: 'VT323'; font-size: 32px; color: var(--mc-gold); margin-bottom: 10px;" id="player-balance">
                     10,000.00 🪙
                 </div>
-                <p style="font-size: 12px; color: var(--mc-subtext); margin-bottom: 16px;">
-                    Prices stay modified until reset. All states are cached locally.
+                <p style="font-size: 11px; color: var(--mc-subtext); margin-bottom: 16px; line-height: 1.4;">
+                    Prices stay modified until reset. All transactions and stock levels are saved in local cache.
                 </p>
                 <button class="btn btn-red" onclick="resetEconomy()">Reset Economy to Default</button>
             </div>
 
             <div class="panel">
-                <h2>Bot Market Engine</h2>
+                <h2>Bot Simulation Engine</h2>
                 <div class="control-group">
                     <label>Simulation Speed</label>
                     <input type="range" id="sim-speed" min="1" max="10" value="3" oninput="updateSimSpeed(this.value)">
@@ -419,16 +506,22 @@
             </div>
         </div>
 
+        <!-- Main Workspace -->
         <div class="workspace">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('store', event)">🛒 Store Front</button>
-                <button class="tab-btn" onclick="switchTab('analytics', event)">📈 Market Charts</button>
-                <button class="tab-btn" onclick="switchTab('logs', event)">📜 Live Log Feed</button>
+            <div class="toolbar">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('store', event)">🛒 Store Front</button>
+                    <button class="tab-btn" onclick="switchTab('analytics', event)">📈 Price Trends</button>
+                    <button class="tab-btn" onclick="switchTab('logs', event)">📜 Activity Logs</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search items..." oninput="filterItems()">
+                </div>
             </div>
 
             <!-- Store Tab -->
             <div id="tab-store" class="tab-content active">
-                <div class="category-bar" id="category-bar"></div>
+                <div class="category-bar" id="category-bar" style="margin-bottom: 16px;"></div>
                 <div class="shop-grid" id="shop-grid"></div>
             </div>
 
@@ -442,9 +535,9 @@
             <!-- Logs Tab -->
             <div id="tab-logs" class="tab-content">
                 <div class="panel">
-                    <h2>Live Server Activity Logs</h2>
+                    <h2>Live Server Store Activity Feed</h2>
                     <div class="log-box" id="log-container">
-                        <div class="log-entry"><span class="log-time">[00:00:00]</span> <span class="log-msg">Full inventory successfully loaded from categories. Cache active.</span></div>
+                        <div class="log-entry"><span class="log-time">[00:00:00]</span> <span class="log-msg">Economy simulator UI successfully initialized. Cache active.</span></div>
                     </div>
                 </div>
             </div>
@@ -452,9 +545,15 @@
     </div>
 
     <script>
-        // Comprehensive item catalog categorized by config files
+        // Item database mapped to server config files:
+        // - Resources (resources.yml)[cite: 1]
+        // - Farming & Food (farming.yml)[cite: 4]
+        // - Mob Drops & Spawners (mobs.yml)[cite: 2]
+        // - Decoration & Dyes (decoration.yml)[cite: 5]
+        // - Blocks & Building (building.yml)[cite: 6]
+        // - Miscellaneous (misc.yml)[cite: 3]
         const DEFAULT_ITEMS = [
-            // Resources (resources.yml)[cite: 1]
+            // Resources
             { id: 'iron_ingot', name: 'Iron Ingot', category: 'Resources', basePrice: 40, price: 40, stock: 1200, maxStock: 2400, icon: 'https://minecraft.wiki/images/Iron_Ingot.png', history: [40] },
             { id: 'gold_ingot', name: 'Gold Ingot', category: 'Resources', basePrice: 80, price: 80, stock: 900, maxStock: 1800, icon: 'https://minecraft.wiki/images/Gold_Ingot.png', history: [80] },
             { id: 'diamond', name: 'Diamond', category: 'Resources', basePrice: 250, price: 250, stock: 400, maxStock: 1000, icon: 'https://minecraft.wiki/images/Diamond.png', history: [250] },
@@ -464,7 +563,7 @@
             { id: 'redstone', name: 'Redstone Dust', category: 'Resources', basePrice: 15, price: 15, stock: 2000, maxStock: 4000, icon: 'https://minecraft.wiki/images/Redstone_Dust.png', history: [15] },
             { id: 'lapis_lazuli', name: 'Lapis Lazuli', category: 'Resources', basePrice: 20, price: 20, stock: 1500, maxStock: 3000, icon: 'https://minecraft.wiki/images/Lapis_Lazuli.png', history: [20] },
 
-            // Farming & Food (farming.yml)[cite: 4]
+            // Farming & Food
             { id: 'wheat', name: 'Wheat', category: 'Farming & Food', basePrice: 8, price: 8, stock: 3000, maxStock: 6000, icon: 'https://minecraft.wiki/images/Wheat.png', history: [8] },
             { id: 'carrot', name: 'Carrot', category: 'Farming & Food', basePrice: 10, price: 10, stock: 2500, maxStock: 5000, icon: 'https://minecraft.wiki/images/Carrot.png', history: [10] },
             { id: 'potato', name: 'Potato', category: 'Farming & Food', basePrice: 10, price: 10, stock: 2500, maxStock: 5000, icon: 'https://minecraft.wiki/images/Potato.png', history: [10] },
@@ -473,7 +572,7 @@
             { id: 'pumpkin', name: 'Pumpkin', category: 'Farming & Food', basePrice: 14, price: 14, stock: 1500, maxStock: 3000, icon: 'https://minecraft.wiki/images/Pumpkin.png', history: [14] },
             { id: 'sugar_cane', name: 'Sugar Cane', category: 'Farming & Food', basePrice: 7, price: 7, stock: 4000, maxStock: 8000, icon: 'https://minecraft.wiki/images/Sugar_Cane.png', history: [7] },
 
-            // Mob Drops & Spawners (mobs.yml)[cite: 2]
+            // Mob Drops & Spawners
             { id: 'gunpowder', name: 'Gunpowder', category: 'Mob Drops & Spawners', basePrice: 20, price: 20, stock: 1200, maxStock: 2400, icon: 'https://minecraft.wiki/images/Gunpowder.png', history: [20] },
             { id: 'rotten_flesh', name: 'Rotten Flesh', category: 'Mob Drops & Spawners', basePrice: 4, price: 4, stock: 4000, maxStock: 8000, icon: 'https://minecraft.wiki/images/Rotten_Flesh.png', history: [4] },
             { id: 'bone', name: 'Bone', category: 'Mob Drops & Spawners', basePrice: 12, price: 12, stock: 2000, maxStock: 4000, icon: 'https://minecraft.wiki/images/Bone.png', history: [12] },
@@ -482,21 +581,21 @@
             { id: 'blaze_rod', name: 'Blaze Rod', category: 'Mob Drops & Spawners', basePrice: 75, price: 75, stock: 400, maxStock: 1000, icon: 'https://minecraft.wiki/images/Blaze_Rod.png', history: [75] },
             { id: 'slime_ball', name: 'Slimeball', category: 'Mob Drops & Spawners', basePrice: 30, price: 30, stock: 800, maxStock: 1600, icon: 'https://minecraft.wiki/images/Slimeball.png', history: [30] },
 
-            // Decoration & Dyes (decoration.yml)[cite: 5]
+            // Decoration & Dyes
             { id: 'tube_coral', name: 'Tube Coral', category: 'Decoration & Dyes', basePrice: 35, price: 35, stock: 600, maxStock: 1200, icon: 'https://minecraft.wiki/images/Tube_Coral.png', history: [35] },
             { id: 'pink_dye', name: 'Pink Dye', category: 'Decoration & Dyes', basePrice: 12, price: 12, stock: 1500, maxStock: 3000, icon: 'https://minecraft.wiki/images/Pink_Dye.png', history: [12] },
             { id: 'yellow_dye', name: 'Yellow Dye', category: 'Decoration & Dyes', basePrice: 10, price: 10, stock: 1600, maxStock: 3200, icon: 'https://minecraft.wiki/images/Yellow_Dye.png', history: [10] },
             { id: 'blue_dye', name: 'Blue Dye', category: 'Decoration & Dyes', basePrice: 18, price: 18, stock: 1200, maxStock: 2400, icon: 'https://minecraft.wiki/images/Blue_Dye.png', history: [18] },
             { id: 'sea_lantern', name: 'Sea Lantern', category: 'Decoration & Dyes', basePrice: 45, price: 45, stock: 800, maxStock: 1600, icon: 'https://minecraft.wiki/images/Sea_Lantern.png', history: [45] },
 
-            // Blocks & Building (building.yml)[cite: 6]
+            // Blocks & Building
             { id: 'grass_block', name: 'Grass Block', category: 'Blocks & Building', basePrice: 6, price: 6, stock: 5000, maxStock: 10000, icon: 'https://minecraft.wiki/images/Grass_Block.png', history: [6] },
             { id: 'oak_log', name: 'Oak Log', category: 'Blocks & Building', basePrice: 8, price: 8, stock: 6000, maxStock: 12000, icon: 'https://minecraft.wiki/images/Oak_Log.png', history: [8] },
             { id: 'cobblestone', name: 'Cobblestone', category: 'Blocks & Building', basePrice: 3, price: 3, stock: 15000, maxStock: 30000, icon: 'https://minecraft.wiki/images/Cobblestone.png', history: [3] },
             { id: 'obsidian', name: 'Obsidian', category: 'Blocks & Building', basePrice: 50, price: 50, stock: 1000, maxStock: 2500, icon: 'https://minecraft.wiki/images/Obsidian.png', history: [50] },
             { id: 'smooth_stone', name: 'Smooth Stone', category: 'Blocks & Building', basePrice: 5, price: 5, stock: 4000, maxStock: 8000, icon: 'https://minecraft.wiki/images/Smooth_Stone.png', history: [5] },
 
-            // Miscellaneous (misc.yml)[cite: 3]
+            // Miscellaneous
             { id: 'chest', name: 'Chest', category: 'Miscellaneous', basePrice: 15, price: 15, stock: 1000, maxStock: 2000, icon: 'https://minecraft.wiki/images/Chest.png', history: [15] },
             { id: 'crafting_table', name: 'Crafting Table', category: 'Miscellaneous', basePrice: 10, price: 10, stock: 1200, maxStock: 2400, icon: 'https://minecraft.wiki/images/Crafting_Table.png', history: [10] },
             { id: 'furnace', name: 'Furnace', category: 'Miscellaneous', basePrice: 25, price: 25, stock: 900, maxStock: 1800, icon: 'https://minecraft.wiki/images/Furnace.png', history: [25] },
@@ -508,17 +607,18 @@
         let playerBalance = 10000.00;
         let serverTreasury = 125450.00;
         let currentCategory = 'ALL';
+        let itemMultipliers = {}; // tracks selected multiplier (1, 16, 64) per item
         let isSimRunning = true;
         let simSpeed = 3;
         let botCount = 50;
 
         function saveCache() {
             const state = { items, playerBalance, serverTreasury };
-            localStorage.setItem('minecraft_economy_full_cache', JSON.stringify(state));
+            localStorage.setItem('minecraft_economy_elite_cache', JSON.stringify(state));
         }
 
         function loadCache() {
-            const cached = localStorage.getItem('minecraft_economy_full_cache');
+            const cached = localStorage.getItem('minecraft_economy_elite_cache');
             if (cached) {
                 try {
                     const parsed = JSON.parse(cached);
@@ -551,15 +651,24 @@
             });
         }
 
+        function setMultiplier(itemId, mult) {
+            itemMultipliers[itemId] = mult;
+            renderShop();
+        }
+
         function renderShop() {
             const grid = document.getElementById('shop-grid');
             grid.innerHTML = '';
+            const query = document.getElementById('search-input').value.toLowerCase();
 
-            const filtered = currentCategory === 'ALL' 
-                ? items 
-                : items.filter(i => i.category === currentCategory);
+            const filtered = items.filter(item => {
+                const matchCat = currentCategory === 'ALL' || item.category === currentCategory;
+                const matchQuery = item.name.toLowerCase().includes(query);
+                return matchCat && matchQuery;
+            });
 
             filtered.forEach(item => {
+                const mult = itemMultipliers[item.id] || 1;
                 const card = document.createElement('div');
                 card.className = 'item-card';
                 
@@ -579,7 +688,7 @@
                     </div>
                     <div class="item-metrics">
                         <div>
-                            <span class="metric-label">Current Price</span>
+                            <span class="metric-label">Unit Price</span>
                             <div class="metric-val ${trendClass}" id="price-${item.id}">${item.price.toFixed(2)} 🪙</div>
                         </div>
                         <div>
@@ -591,13 +700,22 @@
                         <span>Trend: <strong class="${trendClass}" id="trend-${item.id}">${trendSign}${percentChange}%</strong></span>
                         <span>Supply: ${Math.round((item.stock / item.maxStock) * 100)}%</span>
                     </div>
+                    <div class="multiplier-bar">
+                        <button class="mult-btn ${mult === 1 ? 'active' : ''}" onclick="setMultiplier('${item.id}', 1)">1x</button>
+                        <button class="mult-btn ${mult === 16 ? 'active' : ''}" onclick="setMultiplier('${item.id}', 16)">16x</button>
+                        <button class="mult-btn ${mult === 64 ? 'active' : ''}" onclick="setMultiplier('${item.id}', 64)">64x</button>
+                    </div>
                     <div class="item-actions">
-                        <button class="btn-buy" onclick="playerBuy('${item.id}', 1)">Buy (1)</button>
-                        <button class="btn-sell" onclick="playerSell('${item.id}', 1)">Sell (1)</button>
+                        <button class="btn-buy" onclick="playerBuy('${item.id}', ${mult})">Buy (${mult})</button>
+                        <button class="btn-sell" onclick="playerSell('${item.id}', ${mult})">Sell (${mult})</button>
                     </div>
                 `;
                 grid.appendChild(card);
             });
+        }
+
+        function filterItems() {
+            renderShop();
         }
 
         function updateItemPrice(item) {
@@ -650,7 +768,7 @@
 
             const randomItem = items[Math.floor(Math.random() * items.length)];
             const isBuy = Math.random() > 0.48;
-            const amount = Math.floor(Math.random() * 4) + 1;
+            const amount = Math.floor(Math.random() * 8) + 1;
 
             if (isBuy && randomItem.stock >= amount) {
                 randomItem.stock -= amount;
@@ -699,11 +817,11 @@
         }
 
         function resetEconomy() {
-            localStorage.removeItem('minecraft_economy_full_cache');
+            localStorage.removeItem('minecraft_economy_elite_cache');
             items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
             playerBalance = 10000;
             serverTreasury = 125450;
-            logActivity(`🔄 Fully reset economy and inventory back to default baseline.`);
+            logActivity(`🔄 Reset economy and inventory back to original baseline configuration.`);
             renderShop();
             refreshUI();
         }
@@ -738,17 +856,16 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#e0e0e0', font: { family: 'Inter' } }, display: true }
+                    legend: { labels: { color: '#f0f0f5', font: { family: 'Inter' } }, display: true }
                 },
                 scales: {
-                    x: { ticks: { color: '#888' }, grid: { color: '#222' } },
-                    y: { ticks: { color: '#888' }, grid: { color: '#222' } }
+                    x: { ticks: { color: '#888899' }, grid: { color: '#1a1a24' } },
+                    y: { ticks: { color: '#888899' }, grid: { color: '#1a1a24' } }
                 }
             }
         });
 
         function updateChart() {
-            // Plot active category or first few items for clean chart performance
             const targetItems = currentCategory === 'ALL' ? items.slice(0, 8) : items.filter(i => i.category === currentCategory);
             chart.data.datasets = targetItems.map((item, idx) => ({
                 label: item.name,
@@ -761,7 +878,7 @@
             chart.update('none');
         }
 
-        // Run Setup
+        // Initialize Application
         loadCache();
         initCategories();
         renderShop();
