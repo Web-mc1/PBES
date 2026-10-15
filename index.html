@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlockCraft SMP - Live Economy & Store Simulator</title>
+    <title>BlockCraft SMP - Complete Store Economy Simulator</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -11,7 +11,6 @@
             --mc-bg: #121214;
             --mc-panel: #1a1a1e;
             --mc-slot: #8b8b8b;
-            --mc-slot-dark: #373737;
             --mc-border-light: #ffffff;
             --mc-border-dark: #373737;
             --mc-gold: #f39c12;
@@ -62,7 +61,7 @@
 
         .server-title h1 {
             font-family: 'VT323', monospace;
-            font-size: 38px;
+            font-size: 36px;
             color: #fff;
             letter-spacing: 1px;
             text-shadow: 2px 2px #000;
@@ -102,7 +101,7 @@
             max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 300px 1fr;
             gap: 24px;
         }
 
@@ -236,7 +235,7 @@
 
         .shop-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 16px;
         }
 
@@ -276,13 +275,13 @@
         }
 
         .item-title h3 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             color: #fff;
         }
 
         .item-title span {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--mc-subtext);
         }
 
@@ -373,8 +372,8 @@
         <div class="server-brand">
             <img src="https://minecraft.wiki/images/Invicon_Iron_Ingot.png" alt="Server Logo" class="server-logo">
             <div class="server-title">
-                <h1>BLOCKCRAFT SMP STORE SIMULATOR</h1>
-                <p>Synced with resources.yml, mobs.yml, misc.yml, farming.yml, decoration.yml & building.yml</p>
+                <h1>BLOCKCRAFT SMP ECONOMY SIMULATOR</h1>
+                <p>All-Item Synchronized Store Engine (Resources, Farming, Mob Drops, Deco, Building, Misc)</p>
             </div>
         </div>
         <div class="global-stats">
@@ -401,7 +400,7 @@
                     10,000.00 🪙
                 </div>
                 <p style="font-size: 12px; color: var(--mc-subtext); margin-bottom: 16px;">
-                    Prices stay modified until you click the reset button below. Changes auto-save to browser cache.
+                    Prices stay modified until reset. All states are cached locally.
                 </p>
                 <button class="btn btn-red" onclick="resetEconomy()">Reset Economy to Default</button>
             </div>
@@ -409,7 +408,7 @@
             <div class="panel">
                 <h2>Bot Market Engine</h2>
                 <div class="control-group">
-                    <label>Bot Simulation Speed</label>
+                    <label>Simulation Speed</label>
                     <input type="range" id="sim-speed" min="1" max="10" value="3" oninput="updateSimSpeed(this.value)">
                 </div>
                 <div class="control-group">
@@ -429,12 +428,8 @@
 
             <!-- Store Tab -->
             <div id="tab-store" class="tab-content active">
-                <div class="category-bar" id="category-bar">
-                    <!-- Dynamic category buttons -->
-                </div>
-                <div class="shop-grid" id="shop-grid">
-                    <!-- Dynamic items -->
-                </div>
+                <div class="category-bar" id="category-bar"></div>
+                <div class="shop-grid" id="shop-grid"></div>
             </div>
 
             <!-- Analytics Tab -->
@@ -447,9 +442,9 @@
             <!-- Logs Tab -->
             <div id="tab-logs" class="tab-content">
                 <div class="panel">
-                    <h2>Live Server Store Activity</h2>
+                    <h2>Live Server Activity Logs</h2>
                     <div class="log-box" id="log-container">
-                        <div class="log-entry"><span class="log-time">[00:00:00]</span> <span class="log-msg">Config store profiles successfully loaded. Persistence active.</span></div>
+                        <div class="log-entry"><span class="log-time">[00:00:00]</span> <span class="log-msg">Full inventory successfully loaded from categories. Cache active.</span></div>
                     </div>
                 </div>
             </div>
@@ -457,32 +452,56 @@
     </div>
 
     <script>
-        // Config Categories & Initial Item Baseline
+        // Comprehensive item catalog categorized by config files
         const DEFAULT_ITEMS = [
-            // Resources (resources.yml)
-            { id: 'iron_ingot', name: 'Iron Ingot', category: 'Resources', basePrice: 40, price: 40, stock: 1000, maxStock: 2000, icon: 'https://minecraft.wiki/images/Iron_Ingot.png', history: [40] },
-            { id: 'gold_ingot', name: 'Gold Ingot', category: 'Resources', basePrice: 80, price: 80, stock: 800, maxStock: 1600, icon: 'https://minecraft.wiki/images/Gold_Ingot.png', history: [80] },
+            // Resources (resources.yml)[cite: 1]
+            { id: 'iron_ingot', name: 'Iron Ingot', category: 'Resources', basePrice: 40, price: 40, stock: 1200, maxStock: 2400, icon: 'https://minecraft.wiki/images/Iron_Ingot.png', history: [40] },
+            { id: 'gold_ingot', name: 'Gold Ingot', category: 'Resources', basePrice: 80, price: 80, stock: 900, maxStock: 1800, icon: 'https://minecraft.wiki/images/Gold_Ingot.png', history: [80] },
             { id: 'diamond', name: 'Diamond', category: 'Resources', basePrice: 250, price: 250, stock: 400, maxStock: 1000, icon: 'https://minecraft.wiki/images/Diamond.png', history: [250] },
+            { id: 'netherite_ingot', name: 'Netherite Ingot', category: 'Resources', basePrice: 1200, price: 1200, stock: 100, maxStock: 300, icon: 'https://minecraft.wiki/images/Netherite_Ingot.png', history: [1200] },
+            { id: 'emerald', name: 'Emerald', category: 'Resources', basePrice: 150, price: 150, stock: 500, maxStock: 1200, icon: 'https://minecraft.wiki/images/Emerald.png', history: [150] },
+            { id: 'coal', name: 'Coal', category: 'Resources', basePrice: 10, price: 10, stock: 2500, maxStock: 5000, icon: 'https://minecraft.wiki/images/Coal.png', history: [10] },
+            { id: 'redstone', name: 'Redstone Dust', category: 'Resources', basePrice: 15, price: 15, stock: 2000, maxStock: 4000, icon: 'https://minecraft.wiki/images/Redstone_Dust.png', history: [15] },
+            { id: 'lapis_lazuli', name: 'Lapis Lazuli', category: 'Resources', basePrice: 20, price: 20, stock: 1500, maxStock: 3000, icon: 'https://minecraft.wiki/images/Lapis_Lazuli.png', history: [20] },
 
-            // Farming & Food (farming.yml)
-            { id: 'wheat', name: 'Wheat', category: 'Farming & Food', basePrice: 8, price: 8, stock: 2500, maxStock: 5000, icon: 'https://minecraft.wiki/images/Wheat.png', history: [8] },
+            // Farming & Food (farming.yml)[cite: 4]
+            { id: 'wheat', name: 'Wheat', category: 'Farming & Food', basePrice: 8, price: 8, stock: 3000, maxStock: 6000, icon: 'https://minecraft.wiki/images/Wheat.png', history: [8] },
+            { id: 'carrot', name: 'Carrot', category: 'Farming & Food', basePrice: 10, price: 10, stock: 2500, maxStock: 5000, icon: 'https://minecraft.wiki/images/Carrot.png', history: [10] },
+            { id: 'potato', name: 'Potato', category: 'Farming & Food', basePrice: 10, price: 10, stock: 2500, maxStock: 5000, icon: 'https://minecraft.wiki/images/Potato.png', history: [10] },
             { id: 'golden_apple', name: 'Golden Apple', category: 'Farming & Food', basePrice: 150, price: 150, stock: 200, maxStock: 500, icon: 'https://minecraft.wiki/images/Golden_Apple.png', history: [150] },
+            { id: 'bread', name: 'Bread', category: 'Farming & Food', basePrice: 12, price: 12, stock: 1800, maxStock: 3600, icon: 'https://minecraft.wiki/images/Bread.png', history: [12] },
+            { id: 'pumpkin', name: 'Pumpkin', category: 'Farming & Food', basePrice: 14, price: 14, stock: 1500, maxStock: 3000, icon: 'https://minecraft.wiki/images/Pumpkin.png', history: [14] },
+            { id: 'sugar_cane', name: 'Sugar Cane', category: 'Farming & Food', basePrice: 7, price: 7, stock: 4000, maxStock: 8000, icon: 'https://minecraft.wiki/images/Sugar_Cane.png', history: [7] },
 
-            // Mob Drops & Spawners (mobs.yml)
+            // Mob Drops & Spawners (mobs.yml)[cite: 2]
             { id: 'gunpowder', name: 'Gunpowder', category: 'Mob Drops & Spawners', basePrice: 20, price: 20, stock: 1200, maxStock: 2400, icon: 'https://minecraft.wiki/images/Gunpowder.png', history: [20] },
-            { id: 'rotten_flesh', name: 'Rotten Flesh', category: 'Mob Drops & Spawners', basePrice: 4, price: 4, stock: 3000, maxStock: 6000, icon: 'https://minecraft.wiki/images/Rotten_Flesh.png', history: [4] },
+            { id: 'rotten_flesh', name: 'Rotten Flesh', category: 'Mob Drops & Spawners', basePrice: 4, price: 4, stock: 4000, maxStock: 8000, icon: 'https://minecraft.wiki/images/Rotten_Flesh.png', history: [4] },
+            { id: 'bone', name: 'Bone', category: 'Mob Drops & Spawners', basePrice: 12, price: 12, stock: 2000, maxStock: 4000, icon: 'https://minecraft.wiki/images/Bone.png', history: [12] },
+            { id: 'string', name: 'String', category: 'Mob Drops & Spawners', basePrice: 15, price: 15, stock: 1800, maxStock: 3600, icon: 'https://minecraft.wiki/images/String.png', history: [15] },
+            { id: 'ender_pearl', name: 'Ender Pearl', category: 'Mob Drops & Spawners', basePrice: 60, price: 60, stock: 500, maxStock: 1200, icon: 'https://minecraft.wiki/images/Ender_Pearl.png', history: [60] },
+            { id: 'blaze_rod', name: 'Blaze Rod', category: 'Mob Drops & Spawners', basePrice: 75, price: 75, stock: 400, maxStock: 1000, icon: 'https://minecraft.wiki/images/Blaze_Rod.png', history: [75] },
+            { id: 'slime_ball', name: 'Slimeball', category: 'Mob Drops & Spawners', basePrice: 30, price: 30, stock: 800, maxStock: 1600, icon: 'https://minecraft.wiki/images/Slimeball.png', history: [30] },
 
-            // Decoration & Dyes (decoration.yml)
+            // Decoration & Dyes (decoration.yml)[cite: 5]
             { id: 'tube_coral', name: 'Tube Coral', category: 'Decoration & Dyes', basePrice: 35, price: 35, stock: 600, maxStock: 1200, icon: 'https://minecraft.wiki/images/Tube_Coral.png', history: [35] },
             { id: 'pink_dye', name: 'Pink Dye', category: 'Decoration & Dyes', basePrice: 12, price: 12, stock: 1500, maxStock: 3000, icon: 'https://minecraft.wiki/images/Pink_Dye.png', history: [12] },
+            { id: 'yellow_dye', name: 'Yellow Dye', category: 'Decoration & Dyes', basePrice: 10, price: 10, stock: 1600, maxStock: 3200, icon: 'https://minecraft.wiki/images/Yellow_Dye.png', history: [10] },
+            { id: 'blue_dye', name: 'Blue Dye', category: 'Decoration & Dyes', basePrice: 18, price: 18, stock: 1200, maxStock: 2400, icon: 'https://minecraft.wiki/images/Blue_Dye.png', history: [18] },
+            { id: 'sea_lantern', name: 'Sea Lantern', category: 'Decoration & Dyes', basePrice: 45, price: 45, stock: 800, maxStock: 1600, icon: 'https://minecraft.wiki/images/Sea_Lantern.png', history: [45] },
 
-            // Blocks & Building (building.yml)
-            { id: 'grass_block', name: 'Grass Block', category: 'Blocks & Building', basePrice: 10, price: 10, stock: 4000, maxStock: 8000, icon: 'https://minecraft.wiki/images/Grass_Block.png', history: [10] },
-            { id: 'oak_log', name: 'Oak Log', category: 'Blocks & Building', basePrice: 6, price: 6, stock: 5000, maxStock: 10000, icon: 'https://minecraft.wiki/images/Oak_Log.png', history: [6] },
+            // Blocks & Building (building.yml)[cite: 6]
+            { id: 'grass_block', name: 'Grass Block', category: 'Blocks & Building', basePrice: 6, price: 6, stock: 5000, maxStock: 10000, icon: 'https://minecraft.wiki/images/Grass_Block.png', history: [6] },
+            { id: 'oak_log', name: 'Oak Log', category: 'Blocks & Building', basePrice: 8, price: 8, stock: 6000, maxStock: 12000, icon: 'https://minecraft.wiki/images/Oak_Log.png', history: [8] },
+            { id: 'cobblestone', name: 'Cobblestone', category: 'Blocks & Building', basePrice: 3, price: 3, stock: 15000, maxStock: 30000, icon: 'https://minecraft.wiki/images/Cobblestone.png', history: [3] },
+            { id: 'obsidian', name: 'Obsidian', category: 'Blocks & Building', basePrice: 50, price: 50, stock: 1000, maxStock: 2500, icon: 'https://minecraft.wiki/images/Obsidian.png', history: [50] },
+            { id: 'smooth_stone', name: 'Smooth Stone', category: 'Blocks & Building', basePrice: 5, price: 5, stock: 4000, maxStock: 8000, icon: 'https://minecraft.wiki/images/Smooth_Stone.png', history: [5] },
 
-            // Miscellaneous (misc.yml)
+            // Miscellaneous (misc.yml)[cite: 3]
             { id: 'chest', name: 'Chest', category: 'Miscellaneous', basePrice: 15, price: 15, stock: 1000, maxStock: 2000, icon: 'https://minecraft.wiki/images/Chest.png', history: [15] },
-            { id: 'ender_pearl', name: 'Ender Pearl', category: 'Miscellaneous', basePrice: 60, price: 60, stock: 500, maxStock: 1000, icon: 'https://minecraft.wiki/images/Ender_Pearl.png', history: [60] }
+            { id: 'crafting_table', name: 'Crafting Table', category: 'Miscellaneous', basePrice: 10, price: 10, stock: 1200, maxStock: 2400, icon: 'https://minecraft.wiki/images/Crafting_Table.png', history: [10] },
+            { id: 'furnace', name: 'Furnace', category: 'Miscellaneous', basePrice: 25, price: 25, stock: 900, maxStock: 1800, icon: 'https://minecraft.wiki/images/Furnace.png', history: [25] },
+            { id: 'anvil', name: 'Anvil', category: 'Miscellaneous', basePrice: 300, price: 300, stock: 300, maxStock: 800, icon: 'https://minecraft.wiki/images/Anvil.png', history: [300] },
+            { id: 'hopper', name: 'Hopper', category: 'Miscellaneous', basePrice: 120, price: 120, stock: 500, maxStock: 1000, icon: 'https://minecraft.wiki/images/Hopper.png', history: [120] }
         ];
 
         let items = [];
@@ -493,19 +512,13 @@
         let simSpeed = 3;
         let botCount = 50;
 
-        // Save state to LocalStorage (Cache)
         function saveCache() {
-            const state = {
-                items: items,
-                playerBalance: playerBalance,
-                serverTreasury: serverTreasury
-            };
-            localStorage.setItem('minecraft_economy_sim_cache', JSON.stringify(state));
+            const state = { items, playerBalance, serverTreasury };
+            localStorage.setItem('minecraft_economy_full_cache', JSON.stringify(state));
         }
 
-        // Load state from LocalStorage (Cache)
         function loadCache() {
-            const cached = localStorage.getItem('minecraft_economy_sim_cache');
+            const cached = localStorage.getItem('minecraft_economy_full_cache');
             if (cached) {
                 try {
                     const parsed = JSON.parse(cached);
@@ -514,10 +527,9 @@
                     serverTreasury = parsed.serverTreasury;
                     return;
                 } catch(e) {
-                    console.error("Failed to parse cache", e);
+                    console.error("Cache load error", e);
                 }
             }
-            // Default setup if no cache
             items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
         }
 
@@ -529,7 +541,7 @@
                 const btn = document.createElement('button');
                 btn.className = `cat-btn ${cat === 'ALL' ? 'active' : ''}`;
                 btn.innerText = cat;
-                btn.onclick = (e) => {
+                btn.onclick = () => {
                     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentCategory = cat;
@@ -591,7 +603,7 @@
         function updateItemPrice(item) {
             const stockRatio = item.stock / item.maxStock; 
             const multiplier = 2 - stockRatio;
-            item.price = Math.max(item.basePrice * 0.2, item.basePrice * multiplier);
+            item.price = Math.max(item.basePrice * 0.15, item.basePrice * multiplier);
             
             if (item.history.length > 20) item.history.shift();
             item.history.push(item.price);
@@ -601,7 +613,7 @@
             const item = items.find(i => i.id === itemId);
             const cost = item.price * amount;
             if (playerBalance < cost) {
-                logActivity(`⚠️ Insufficient balance to purchase ${amount}x ${item.name}.`);
+                logActivity(`⚠️ Insufficient balance to buy ${amount}x ${item.name}.`);
                 return;
             }
             if (item.stock < amount) {
@@ -638,7 +650,7 @@
 
             const randomItem = items[Math.floor(Math.random() * items.length)];
             const isBuy = Math.random() > 0.48;
-            const amount = Math.floor(Math.random() * 3) + 1;
+            const amount = Math.floor(Math.random() * 4) + 1;
 
             if (isBuy && randomItem.stock >= amount) {
                 randomItem.stock -= amount;
@@ -687,11 +699,11 @@
         }
 
         function resetEconomy() {
-            localStorage.removeItem('minecraft_economy_sim_cache');
+            localStorage.removeItem('minecraft_economy_full_cache');
             items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
             playerBalance = 10000;
             serverTreasury = 125450;
-            logActivity(`🔄 Reset economy back to original configuration standards.`);
+            logActivity(`🔄 Fully reset economy and inventory back to default baseline.`);
             renderShop();
             refreshUI();
         }
@@ -726,7 +738,7 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { color: '#e0e0e0', font: { family: 'Inter' } } }
+                    legend: { labels: { color: '#e0e0e0', font: { family: 'Inter' } }, display: true }
                 },
                 scales: {
                     x: { ticks: { color: '#888' }, grid: { color: '#222' } },
@@ -736,10 +748,12 @@
         });
 
         function updateChart() {
-            chart.data.datasets = items.map((item, idx) => ({
+            // Plot active category or first few items for clean chart performance
+            const targetItems = currentCategory === 'ALL' ? items.slice(0, 8) : items.filter(i => i.category === currentCategory);
+            chart.data.datasets = targetItems.map((item, idx) => ({
                 label: item.name,
                 data: item.history,
-                borderColor: ['#3498db', '#9b59b6', '#f1c40f', '#bdc3c7', '#2ecc71', '#e67e22', '#7f8c8d', '#e74c3c', '#1abc9c', '#d35400', '#2c3e50', '#8e44ad'][idx % 12],
+                borderColor: ['#3498db', '#9b59b6', '#f1c40f', '#2ecc71', '#e67e22', '#e74c3c', '#1abc9c', '#d35400'][idx % 8],
                 backgroundColor: 'transparent',
                 borderWidth: 2,
                 tension: 0.2
